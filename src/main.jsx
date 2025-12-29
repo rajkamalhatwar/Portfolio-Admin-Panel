@@ -29,36 +29,13 @@ import './assets/js/settings.js'
 import './assets/js/hoverable-collapse.js'
 import './assets/js/todolist.js'
 
-// Dashboard scripts
-import './assets/js/jquery.cookie.js'
-import './assets/js/dashboard.js'
 
-
-import Layout from './Layout.jsx'
-
-import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom'
-import Dashboard from './features/dashboard/Dashboard.jsx'
-import UserReg from './features/UserReg/UserReg.jsx'
-import Education from './features/education/Education.jsx'
-import Skills from './features/skills/Skills.jsx'
-import Experiance from './features/experiance/Experiance.jsx'
-import Projects from './features/projects/Projects.jsx' 
- 
  
 
-const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route path="/" element={<Layout />}>
-      <Route path="" element={<Dashboard />} />
-      <Route path="UserReg" element={<UserReg />} />
-      <Route path="Education" element={<Education />} /> 
-      <Route path="Experiance" element={<Experiance />} />
-      <Route path="Skills" element={<Skills />} />
-      <Route path="Projects" element={<Projects />} />
-     
-    </Route>
-  )
-)
+import { RouterProvider } from 'react-router-dom'
+ 
+import router from './routes/Router.jsx' 
+ 
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
