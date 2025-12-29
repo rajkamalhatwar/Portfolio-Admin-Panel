@@ -1,4 +1,9 @@
 import React from 'react'
+// Dashboard scripts
+import '../../assets/js/jquery.cookie.js'
+import '../../assets/js/dashboard.js' 
+
+ 
 
 function Dashboard() {
   return (
