@@ -5,9 +5,9 @@ import ProfileImage from '../assets/images/faces/face1.jpg';
 import LogoMini from '../assets/images/logo-mini.svg';
 import Navbar from '../componants/layout/navbar/Navbar.jsx';
 import Sidebar from '../componants/layout/sidebar/Sidebar.jsx';
-import Footer from '../componants/layout/footer/Footer.jsx';
-import Dashboard from '../features/dashboard/Dashboard.jsx';
+import Footer from '../componants/layout/footer/Footer.jsx'; 
 import { Outlet } from 'react-router-dom';
+ 
  
 
 function Layout() {
