@@ -30,15 +30,42 @@ import './assets/js/hoverable-collapse.js'
 import './assets/js/todolist.js'
 
 
- 
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import { RouterProvider } from 'react-router-dom'
  
 import router from './routes/Router.jsx' 
+import store from './store/store.js'
+import { Provider } from 'react-redux'
  
+// 🔒 HARD BLOCK native form submission (jQuery-safe)
+document.addEventListener(
+  "submit",
+  function (e) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    return false;
+  },
+  true // capture phase
+);
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <RouterProvider router={router} />
-  </StrictMode>,
+    <Provider store={store} >
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}       // 3 seconds
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
+      <RouterProvider router={router} />
+    </Provider>
+  </StrictMode>
 )
