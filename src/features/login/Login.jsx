@@ -73,11 +73,7 @@ function Login() {
                 <h4>Hello! let's get started</h4>
                 <h6 className="fw-light">Sign in to continue.</h6>
                 <form className="pt-3" 
-                  onSubmit={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation(); // 🔥 IMPORTANT
-                      handleLogin(e);
-                    }}>
+                  onSubmit={handleLogin}>
                   <div className="form-group">
                     <input 
                     type="text" 
@@ -97,31 +93,14 @@ function Login() {
                     onChange={(e)=> setPassword(e.target.value)}/>
                   </div>
                   <div className="mt-3 d-grid gap-2">
-                    {/* <button type='submit' className="btn btn-block btn-primary btn-lg fw-medium auth-form-btn">
+                    <button type='submit' className="btn btn-block btn-primary btn-lg fw-medium auth-form-btn">
                       {loading ? (
                         <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                       ) : (
                         "SIGN IN"
-                      )} 
-                    
-                      </button> */}
-                      <button
-                        type="button"   // 🔴 IMPORTANT
-                        className="btn btn-block btn-primary btn-lg fw-medium auth-form-btn"
-                        onClick={   // 🔥 THIS IS THE KEY
-                          handleLogin
-                        }
-                        disabled={loading}
-                      >
-                        {loading ? (
-                          <span className="spinner-border spinner-border-sm" />
-                        ) : (
-                          "SIGN IN"
-                        )}
-                      </button> 
- 
-                  </div> 
-                   
+                      )}  
+                    </button>    
+                  </div>  
                 </form>
               </div>
             </div>
