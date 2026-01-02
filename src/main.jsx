@@ -39,17 +39,7 @@ import router from './routes/Router.jsx'
 import store from './store/store.js'
 import { Provider } from 'react-redux'
  
-// 🔒 HARD BLOCK native form submission (jQuery-safe)
-document.addEventListener(
-  "submit",
-  function (e) {
-    e.preventDefault();
-    e.stopImmediatePropagation();
-    return false;
-  },
-  true // capture phase
-);
-
+ 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Provider store={store} >
