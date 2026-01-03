@@ -11,9 +11,16 @@ const logout= async () => {
   // return response.data; 
 };
 
+// ✅ GET user by ID
+const getUserById = async (userId) => {
+  const response = await apiClient.get(`/UserReg/GetUserById/${userId}`);
+  return response.data.getUsersById[0];
+};
+
 const authService = {
   login,
   logout,
+  getUserById,
 };
 
 export default authService;
