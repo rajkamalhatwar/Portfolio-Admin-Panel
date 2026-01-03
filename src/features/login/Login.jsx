@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import { login as loginAction } from './authSlice';
 import authService from './authService';
 import { toast } from 'react-toastify';
+import {  SweetToast } from '../../componants/toastAlert/TostAlert';
 
 
 
@@ -17,46 +18,47 @@ function Login() {
  const [loading, setLoading] = useState(false);
 
  const handleLogin = async (e) => {
-  e.preventDefault();
-  
-  setError("");
+  e.preventDefault(); 
+
+    setError("");
 
     if (!username || !password) {
-      toast.error("Username and password are required");
+      SweetToast.warning("Username and password are required");
+ 
       return;
     }
 
     setLoading(true);
     try {
-    const response = await authService.login({
-          username,
-          password,
-    });
+      const response = await authService.login({
+            username,
+            password,
+      });
 
       if (response.success) {
-          // 1. Save token
-            localStorage.setItem("token", response.token);
+            // 1. Save token
+              localStorage.setItem("token", response.token);
 
-          // 2. Update Redux state
-            dispatch(
-              loginAction({
-                userId: response.userId,
-                userData: {
-                  response, // optional, add more if API sends
-                },
-              })
-            );
+            // 2. Update Redux state
+              dispatch(
+                loginAction({
+                  userId: response.userId,
+                  userData: {
+                    response, // optional, add more if API sends
+                  },
+                })
+              );
 
-            // 3. Navigate to dashboard
-            navigate("/", { replace: true });
-      } 
-      else 
-      { 
-        setError(response.message || "Login failed");
-      }
+              // 3. Navigate to dashboard
+              navigate("/", { replace: true });
+        } 
+        else 
+        { 
+          SweetToast.error(response.message || "Login failed");
+        }
     } 
     catch (err) {
-       toast.error(err.response?.data?.message || "Something went wrong. Please try again.");
+       SweetToast.error(err.response?.data?.message || "Something went wrong. Please try again.");
     }finally {
       setLoading(false);
     }
@@ -67,9 +69,9 @@ function Login() {
         <div className="row w-100 mx-0">
             <div className="col-lg-4 mx-auto">
               <div className="auth-form-light text-left py-5 px-4 px-sm-5">
-                <div className="brand-logo">
+                {/* <div className="brand-logo">
                   <img src="../../assets/images/logo.svg" alt="logo"/>
-                </div>
+                </div> */}
                 <h4>Hello! let's get started</h4>
                 <h6 className="fw-light">Sign in to continue.</h6>
                 <form className="pt-3" 
