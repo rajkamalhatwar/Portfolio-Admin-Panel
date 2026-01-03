@@ -1,4 +1,5 @@
 import React from 'react'
+import LogOutBtn from './LogOutBtn'
  
 
 function Navbar(
@@ -10,7 +11,8 @@ function Navbar(
     SubText='Your performance summary this week',
     ProfileImage
   }
-) {
+) 
+{
   return (
     <>
         {/* partial:partials/_navbar.html */}
@@ -173,10 +175,7 @@ function Navbar(
                     <p className="fw-light text-muted mb-0">allenmoreno@gmail.com</p>
                   </div>
                   <a className="dropdown-item"><i className="dropdown-item-icon mdi mdi-account-outline text-primary me-2"></i> My Profile <span className="badge badge-pill badge-danger">1</span></a>
-                  <a className="dropdown-item"><i className="dropdown-item-icon mdi mdi-message-text-outline text-primary me-2"></i> Messages</a>
-                  <a className="dropdown-item"><i className="dropdown-item-icon mdi mdi-calendar-check-outline text-primary me-2"></i> Activity</a>
-                  <a className="dropdown-item"><i className="dropdown-item-icon mdi mdi-help-circle-outline text-primary me-2"></i> FAQ</a>
-                  <a className="dropdown-item"><i className="dropdown-item-icon mdi mdi-power text-primary me-2"></i>Sign Out</a>
+                  <LogOutBtn />
                 </div>
               </li>
             </ul>
