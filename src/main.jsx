@@ -30,7 +30,7 @@ import './assets/js/hoverable-collapse.js'
 import './assets/js/todolist.js'
 
 
-import { ToastContainer } from "react-toastify";
+ 
 import "react-toastify/dist/ReactToastify.css";
 
 import { RouterProvider } from 'react-router-dom'
@@ -38,23 +38,13 @@ import { RouterProvider } from 'react-router-dom'
 import router from './routes/Router.jsx' 
 import store from './store/store.js'
 import { Provider } from 'react-redux'
+import TostAlert from './componants/toastAlert/TostAlert.jsx'
  
  
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Provider store={store} >
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}       // 3 seconds
-        hideProgressBar={false}
-        newestOnTop={true}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-      />
+       <TostAlert />
       <RouterProvider router={router} />
     </Provider>
   </StrictMode>
