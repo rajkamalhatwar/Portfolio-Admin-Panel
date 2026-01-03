@@ -2,12 +2,12 @@ import React from 'react'
 
 const TextArea = ({
   label,
-  name,
-  value,
-  onChange,
+  name, 
   placeholder,
   rows = 3,
-  required = false,   // 👈 NEW
+  className = '',
+  required = false, 
+  ...props  
 }) => {
   return (
     <div className="form-group">
@@ -19,13 +19,12 @@ const TextArea = ({
       )}
 
       <textarea
-        className="form-control"
-        name={name}
-        value={value}
-        onChange={onChange}
+        className={`form-control ${className}`}
+        name={name}  
         placeholder={placeholder}
         rows={rows}
         required={required}
+        {...props}
       ></textarea>
     </div>
   );

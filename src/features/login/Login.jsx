@@ -39,17 +39,21 @@ function Login() {
             // 1. Save token
               localStorage.setItem("token", response.token);
 
-            // 2. Update Redux state
+            // 2. Get user data
+              const LogedInUserData = await authService.getUserById(response.userId);
+              console.log("Fetched User Data:", LogedInUserData);
+
+            // 3. Update Redux state
               dispatch(
                 loginAction({
                   userId: response.userId,
                   userData: {
-                    response, // optional, add more if API sends
+                    LogedInUserData, // optional, add more if API sends
                   },
                 })
               );
 
-              // 3. Navigate to dashboard
+              // 4. Navigate to dashboard
               navigate("/", { replace: true });
         } 
         else 

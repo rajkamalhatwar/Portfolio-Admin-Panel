@@ -4,10 +4,11 @@ const Input = ({
   label,
   type = "text",
   name,
-  value,
-  onChange,
+  value, 
   placeholder,
-  required = false,   // 👈 NEW
+  className = '',
+  required = false,    
+  ...props
 }) => {
   return (
     <div className="form-group">
@@ -20,12 +21,11 @@ const Input = ({
 
       <input
         type={type}
-        className="form-control"
-        name={name}
-        value={value}
-        onChange={onChange}
+        className={`form-control ${className}`}
+        name={name} 
         placeholder={placeholder}
-        required={required}   // 👈 HTML validation
+        required={required}    
+        {...props}
       />
     </div>
   );
