@@ -1,11 +1,11 @@
 import React from "react";
 
-const DynamicTable = ({ title, data, onEdit, hiddenColumns = [] }) => {
-  if (!data || data.length === 0) {
+
+const DynamicTable = ({ title, data = [], onEdit, onDelete, hiddenColumns = [] }) => {
+  if (!Array.isArray(data) || data.length === 0 || !data[0]) {
     return <p className="text-muted">No data available</p>;
   }
 
-  // Filter headers based on hiddenColumns
   const headers = Object.keys(data[0]).filter(
     (key) => !hiddenColumns.includes(key)
   );
@@ -20,34 +20,42 @@ const DynamicTable = ({ title, data, onEdit, hiddenColumns = [] }) => {
             <table className="table table-hover">
               <thead>
                 <tr>
+                  <th>Edit</th>
+                  <th>Delete</th>                  
                   {headers.map((header) => (
                     <th key={header}>
                       {header.replace(/([A-Z])/g, " $1").toUpperCase()}
                     </th>
-                  ))}
-                  <th>ACTIONS</th>
+                  ))} 
                 </tr>
               </thead>
 
               <tbody>
                 {data.map((row, index) => (
-                  <tr key={row.id || index}>
+                  <tr key={row.id ?? index}> 
+                    <td className="text-center align-middle"> 
+                        <i
+                          className="mdi mdi-file-edit-outline text-primary me-3 cursor-pointer"
+                          title="Edit"
+                          style={{ fontSize: "25px",cursor: "pointer" }} 
+                          onClick={() => onEdit(row)}
+                        ></i>
+                    </td>
+                    <td className="text-center align-middle">
+                        <i
+                          className="mdi mdi-trash-can-outline text-danger cursor-pointer"
+                          title="Delete"
+                          style={{ fontSize: "25px",cursor: "pointer"  }} 
+                          onClick={() => onDelete(row.id)}
+                        ></i>
+                    </td>         
                     {headers.map((key) => (
                       <td key={key}>
                         {Array.isArray(row[key])
                           ? row[key].length
-                          : row[key]?.toString()}
+                          : row[key] ?? "-"}
                       </td>
-                    ))}
-
-                    <td>
-                      <button
-                        className="btn btn-sm btn-primary"
-                        onClick={() => onEdit(row)}
-                      >
-                        Edit
-                      </button>
-                    </td>
+                    ))} 
                   </tr>
                 ))}
               </tbody>
