@@ -8,7 +8,14 @@ import '../../assets/js/dashboard.js'
 function Dashboard() {
   return (
     <>
-        <div className="col-sm-12">
+    <iframe
+        src="https://rajkamalhatwar.netlify.app/"
+        width="100%"
+        height="600px"
+        style={{ border: "1px solid #ccc", borderRadius: "8px" }}
+        title="Resume Preview"
+    ></iframe>
+        {/* <div className="col-sm-12">
             <div className="home-tab">
             <div className="d-sm-flex align-items-center justify-content-between border-bottom">
                 <ul className="nav nav-tabs" role="tablist">
@@ -74,7 +81,7 @@ function Dashboard() {
                 </div>
             </div>
             </div>
-        </div>
+        </div> */}
     </> 
   )
 }
