@@ -32,25 +32,25 @@ function Education() {
 
       switch (res) {
         case 1:
-          SweetToast.success(message); // User registered
-          fetchEducation(); // Refresh the table data
+          SweetToast.success(message);  
+          fetchEducation();  
           reset();
           setEditId(0);
           break;
 
         case 2:
-          SweetToast.success(message); // User updated
-          fetchEducation(); // Refresh the table data
+          SweetToast.success(message);  
+          fetchEducation(); 
           reset();
           setEditId(0);
           break;
 
         case 3:
-          SweetToast.warning(message); // Email exists
+          SweetToast.warning(message);  
           break;
 
         case 4:
-          SweetToast.error(message); // User not found
+          SweetToast.error(message); 
           break;
 
         default:
@@ -58,7 +58,7 @@ function Education() {
           break;
       }
     }catch (error) {
-      SweetToast.error(err.response?.data?.message || "Something went wrong. Please try again.");
+      SweetToast.error(error.response?.data?.message || "Something went wrong. Please try again.");
     }finally {
       setLoading(false);
     }
@@ -82,15 +82,15 @@ function Education() {
       const { res, message } = response;
       switch (res) {
         case 1:
-          SweetToast.success(message); // User registered
-          fetchEducation(); // Refresh the table data
+          SweetToast.success(message);  
+          fetchEducation();  
           reset();
           setEditId(0);
           break;
 
         case 0:
-          SweetToast.success(message); // User updated
-          fetchEducation(); // Refresh the table data
+          SweetToast.success(message);  
+          fetchEducation();  
           reset();
           setEditId(0);
           break;  
@@ -98,10 +98,8 @@ function Education() {
         default:
           SweetToast.error("Something went wrong.");
           break;
-      }
-      SweetToast.success("Education deleted");
-      console.log("Delete clicked for ID:", id);
-      fetchEducation(); // ✅ refresh table
+      } 
+      fetchEducation();  
     } catch {
       SweetToast.error("Delete failed");
     }
