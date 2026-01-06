@@ -34,15 +34,13 @@ function Education() {
         case 1:
           SweetToast.success(message);  
           fetchEducation();  
-          reset();
-          setEditId(0);
+          clearForm();
           break;
 
         case 2:
           SweetToast.success(message);  
           fetchEducation(); 
-          reset();
-          setEditId(0);
+          clearForm();
           break;
 
         case 3:
@@ -84,15 +82,13 @@ function Education() {
         case 1:
           SweetToast.success(message);  
           fetchEducation();  
-          reset();
-          setEditId(0);
+          clearForm();
           break;
 
         case 0:
           SweetToast.success(message);  
           fetchEducation();  
-          reset();
-          setEditId(0);
+          clearForm();
           break;  
 
         default:
@@ -118,7 +114,23 @@ function Education() {
     fetchEducation();
   }, []);
   
- 
+ const clearForm = () => {
+    reset({
+      degreeName: "",
+      branchName: "",
+      collegeName: "",
+      markType: "",
+      marks: "",
+      admissionMonth: "",
+      admissionYear: "",
+      passingMonth: "",
+      passingYear: "",
+      sequenceNo: "",
+      collegeAddress: ""
+    });
+
+    setEditId(0);
+  };
 
   return (
     <>
@@ -255,8 +267,11 @@ function Education() {
  
  
 
-            <Button type="submit" label="Submit" className="btn-primary me-2" loading={loading} />
-            <Button type="reset" label="Cancel" className="btn-light" onClick={() => setEditId(0)}/>
+            <Button type="submit" 
+              label={editId > 0 ? "Update" : "Submit"} 
+              className={editId > 0 ? "btn-warning me-2" : "btn-primary me-2"}
+              loading={loading} />
+            <Button type="reset" label="Cancel" className="btn-light" onClick={clearForm}/>
           </form>
         </div>
       </div>
