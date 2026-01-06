@@ -5,40 +5,177 @@ import TextArea from '../../componants/formCompo/TextArea.jsx'
 import Button from '../../componants/formCompo/Button.jsx'
 import Checkbox from '../../componants/formCompo/Checkbox.jsx'
 import { useState,useEffect } from 'react'
+import experianceService from './ExperianceService.js'
+import { useSelector } from 'react-redux'
+import { SweetToast } from '../../componants/toastAlert/TostAlert.jsx'
+import DynamicTable from '../../componants/tables/DynamicTable.jsx' 
 
 function Experiance() {
   const {register, handleSubmit,reset,control,watch,setValue} = useForm({
     defaultValues: {
-      Achievements: [{ achievement: "" }],
+      achievements: [{ achievement: "" }],
       present: false
     }
   });
   const [loading, setLoading]  = useState (false);
   const [editId, setEditId] = useState(0);
+  const [experianceInfo, setExperianceInfo] = useState([]);
+  const userId = useSelector((state) => state.auth.userId);
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "Achievements"
+    name: "achievements"
   });
 
-  const SubmitExperiance = (data) => {
+  const normalizePayload = (data) => ({
+    ...data,
+    joiningYear: data.joiningYear === "" ? null : Number(data.joiningYear),
+    releaseYear: data.releaseYear === "" ? null : Number(data.releaseYear),
+    sequenceNo: data.sequenceNo === "" ? null : Number(data.sequenceNo),
+    achievements: data.achievements?.filter(a => a.achievement?.trim()), // remove empty achievements
+  });
+
+
+  const SubmitExperiance = async (data) => {
+    const payload = normalizePayload({
+      ...data,
+      id: editId,
+      userId: userId || 0,   
+    });
+
     setLoading(true);
-    try {
-      
-    } catch (error) {
-      
+    try{
+      const response = await experianceService.submitExperiance(payload);
+      console.log("API Response:", response);
+      const { res, message } = response;
+
+      switch (res) {
+        case 1:
+          SweetToast.success(message);  
+          fetchExperiance();  
+          clearForm();
+          setEditId(0);
+          break;
+
+        case 2:
+          SweetToast.success(message);  
+          fetchExperiance(); 
+          clearForm();
+          setEditId(0);
+          break;
+
+        case 3:
+          SweetToast.warning(message);  
+          break;
+
+        case 4:
+          SweetToast.error(message); 
+          break;
+
+        default:
+          SweetToast.error("Something went wrong.");
+          break;
+      }
+    }catch (error) {
+      SweetToast.error(error.response?.data?.message || "Something went wrong. Please try again.");
     }finally {
       setLoading(false);
     }
-    console.log(data);
+
+    console.log("payload data",payload);  
   }
+
+  const handleEdit = (rowData) => {
+    console.log("Edit clicked:", rowData);
+    setEditId(rowData.id);
+    // reset({
+    //   ...rowData,
+
+    //   // 🔥 map API array → RHF field array
+    //   achievement: rowData.achievements?.length
+    //     ? rowData.achievements
+    //     : [{ achievement: "" }]
+    //   }); // ✅ prefills form
+
+        reset({
+          ...rowData,
+          achievements: rowData.achievements?.length
+            ? rowData.achievements
+            : [{ achievement: "" }]
+        });
+     
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete?",id)) return;
+
+    try { 
+      const response = [];//await educationService.deleteEducation(id);
+      const { res, message } = response;
+      switch (res) {
+        case 1:
+          SweetToast.success(message);  
+          fetchEducation();  
+          clearForm();
+          setEditId(0);
+          break;
+
+        case 0:
+          SweetToast.success(message);  
+          fetchEducation();  
+          clearForm();
+          setEditId(0);
+          break;  
+
+        default:
+          SweetToast.error("Something went wrong.");
+          break;
+      } 
+      fetchEducation();  
+    } catch {
+      SweetToast.error("Delete failed");
+    }
+  };
+ 
+
+  const fetchExperiance = async () => {
+      try {
+        const response = await experianceService.getExperianceInfo();
+        console.log("Fetched Experiance Info:", response);
+        setExperianceInfo(response || []);
+      } catch (error) {
+        SweetToast.error("Failed to load details");
+      }
+  };
   const isPresent = watch("present");
   useEffect(() => {
-  if (isPresent) {
-    setValue("releaseMonth", "");
-    setValue("releaseYear", "");
-  }
-}, [isPresent, setValue]);
+    if (isPresent) {
+      setValue("releaseMonth", null);
+      setValue("releaseYear", null);
+    }
+    fetchExperiance();
+  }, [isPresent, setValue]);
+
+  const clearForm = () => {
+    reset({
+      companyName: "",
+      designation: "",
+      joiningMonth: "",
+      joiningYear: "",
+      releaseMonth: "",
+      releaseYear: "",
+      present: false,
+      city: "",
+      state: "",
+      country: "",
+      companyAddress: "",
+      sequenceNo: "",
+      achievements: [{ achievement: "" }] // 🔥 IMPORTANT
+    });
+
+    setEditId(0);
+  };
+
   return (
     <>
       <div className="col-md-12 grid-margin stretch-card">
@@ -185,14 +322,14 @@ function Experiance() {
 
 
             <div className="col-md-12">
-              <label className="form-label">Experinace Achievements Points</label>
+              <label className="form-label">Description/Achievement Points</label>
 
               {fields.map((item, index) => (
                 <div className="row" key={item.id}>
                   <div className="col-md-10">
                     <Input
-                      placeholder={`Achievements ${index + 1}`}
-                      {...register(`Achievements.${index}.achievement`, { required: true })}
+                      placeholder={`Achievement ${index + 1}`}
+                      {...register(`achievements.${index}.achievement`, { required: true })}
                     />
                   </div>
                   <div className="col-md-2"> 
@@ -224,12 +361,28 @@ function Experiance() {
   
   
 
-              <Button type="submit" label="Submit" className="btn-primary me-2" loading={loading} />
-              <Button type="reset" label="Cancel" className="btn-light" onClick={() => setEditId(0)}/>
+              <Button type="submit" 
+              label={editId > 0 ? "Update" : "Submit"}
+              className={editId > 0 ? "btn-warning me-2" : "btn-primary me-2"}
+              loading={loading} />
+              <Button type="reset" label="Cancel" className="btn-light" onClick={clearForm}/>
             </form>
           </div>
         </div>
       </div>    
+      <div className="col-md-12 grid-margin stretch-card">
+        <div className="card">
+          <div className="card-body"> 
+              <DynamicTable
+                title="Experiance Details"
+                data={experianceInfo}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                hiddenColumns={["id", "userId", "companyAddress", "isActive", "joiningYear", "joiningMonth", "present", "achievements", "releaseMonth", "releaseYear", "createdDate"]}
+              />
+          </div>
+        </div>  
+      </div>  
     </>
   )
 }

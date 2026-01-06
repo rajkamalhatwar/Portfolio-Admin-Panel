@@ -43,14 +43,13 @@ export default function Skills() {
         case 1:
           SweetToast.success(message);  
           fetchSkills();  
-          setEditId(0);
+          clearForm();
           break;
 
         case 2:
           SweetToast.success(message);  
           fetchSkills();  
-          reset();
-          setEditId(0);
+          clearForm(); 
           break;
 
         case 3:
@@ -92,15 +91,13 @@ export default function Skills() {
         case 1:
           SweetToast.success(message);  
           fetchSkills();  
-          reset();
-          setEditId(0);
+          clearForm();
           break;
 
         case 0:
           SweetToast.success(message);  
           fetchSkills(); 
-          reset();
-          setEditId(0);
+          clearForm();
           break;  
 
         default:
@@ -125,6 +122,15 @@ export default function Skills() {
   useEffect(() => { 
     fetchSkills();
   }, []);
+
+  const clearForm = () => {
+    reset({
+      skillName: "",
+      outOf100: "",
+      sequenceNo: ""
+    }); 
+    setEditId(0);
+  };
 
   return (
     <>
@@ -173,8 +179,11 @@ export default function Skills() {
             </div>   
  
 
-            <Button type="submit" label="Submit" className="btn-primary me-2" loading={loading} />
-            <Button type="reset" label="Cancel" className="btn-light" onClick={() => setEditId(0)}/>
+            <Button type="submit" 
+              label={editId > 0 ? "Update" : "Submit"} 
+              className={editId > 0 ? "btn-warning me-2" : "btn-primary me-2"}
+              loading={loading} />
+            <Button type="reset" label="Cancel" className="btn-light" onClick={clearForm}/>
           </form>
         </div>
       </div>
