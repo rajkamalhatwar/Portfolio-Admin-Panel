@@ -87,51 +87,41 @@ function Experiance() {
 
   const handleEdit = (rowData) => {
     console.log("Edit clicked:", rowData);
-    setEditId(rowData.id);
-    // reset({
-    //   ...rowData,
+    setEditId(rowData.id); 
 
-    //   // 🔥 map API array → RHF field array
-    //   achievement: rowData.achievements?.length
-    //     ? rowData.achievements
-    //     : [{ achievement: "" }]
-    //   }); // ✅ prefills form
-
-        reset({
-          ...rowData,
-          achievements: rowData.achievements?.length
-            ? rowData.achievements
-            : [{ achievement: "" }]
-        });
+    reset({
+      ...rowData,
+      achievements: rowData.achievements?.length
+        ? rowData.achievements
+        : [{ achievement: "" }]
+    });
      
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete?",id)) return;
+    if (!window.confirm("Are you sure you want to delete?")) return;
 
     try { 
-      const response = [];//await educationService.deleteEducation(id);
+      const response = await experianceService.deleteExperiance(id);
       const { res, message } = response;
       switch (res) {
         case 1:
           SweetToast.success(message);  
-          fetchEducation();  
-          clearForm();
-          setEditId(0);
+          fetchExperiance();  
+          clearForm(); 
           break;
 
         case 0:
           SweetToast.success(message);  
-          fetchEducation();  
-          clearForm();
-          setEditId(0);
+          fetchExperiance();  
+          clearForm(); 
           break;  
 
         default:
           SweetToast.error("Something went wrong.");
           break;
       } 
-      fetchEducation();  
+      fetchExperiance();  
     } catch {
       SweetToast.error("Delete failed");
     }
@@ -140,8 +130,7 @@ function Experiance() {
 
   const fetchExperiance = async () => {
       try {
-        const response = await experianceService.getExperianceInfo();
-        console.log("Fetched Experiance Info:", response);
+        const response = await experianceService.getExperianceInfo(); 
         setExperianceInfo(response || []);
       } catch (error) {
         SweetToast.error("Failed to load details");

@@ -11,13 +11,14 @@ const getExperianceInfo = async () => {
 }; 
 
 const deleteExperiance = async (id) => {
-  const response = await apiClient.post("/Education/DeleteEducation?educationId=" + id);
+  const response = await apiClient.post("/Experiance/DeleteExperience?experianceId=" + id);
   return response.data;
 }; 
 
 const experianceService = {
   submitExperiance,
   getExperianceInfo,
+  deleteExperiance,
    
 };
 
