@@ -5,6 +5,8 @@ import Button from '../../componants/formCompo/Button.jsx';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { SweetToast } from '../../componants/toastAlert/TostAlert.jsx';
+import projectService from './ProjectService.js';
+import DynamicTable from '../../componants/tables/DynamicTable.jsx';
  
 
 function Projects() {
@@ -24,23 +26,114 @@ function Projects() {
     name: "features"
   });
 
+    const normalizePayload = (data) => ({
+    ...data, 
+    features: data.features?.filter(a => a.feature?.trim()), // remove empty achievements
+  });
+
   const SubmitProjects = async (data) => {
-    const payload = {
+    const payload = normalizePayload({
       ...data,
       id: editId,
       userId: userId || 0,   
-    };
+    });
+
     setLoading(true);
     try{
-       
-      console.log("Payload", payload);
-       
+      const response = await projectService.submitProject(payload);
+      console.log("API Response:", response);
+      const { res, message } = response;
+
+      switch (res) {
+        case 1:
+          SweetToast.success(message);  
+          fetchProjectInfo();  
+          clearForm();
+          setEditId(0);
+          break;
+
+        case 2:
+          SweetToast.success(message);  
+          fetchProjectInfo(); 
+          clearForm();
+          setEditId(0);
+          break;
+
+        case 3:
+          SweetToast.warning(message);  
+          break;
+
+        case 4:
+          SweetToast.error(message); 
+          break;
+
+        default:
+          SweetToast.error("Something went wrong.");
+          break;
+      }
     }catch (error) {
       SweetToast.error(error.response?.data?.message || "Something went wrong. Please try again.");
     }finally {
       setLoading(false);
     }
+
+    console.log("payload data",payload);  
   };
+
+  const handleEdit = (rowData) => {
+    console.log("Edit clicked:", rowData);
+    setEditId(rowData.id); 
+
+    reset({
+      ...rowData,
+      features: rowData.features?.length
+        ? rowData.features
+        : [{ feature: "" }]
+    });
+     
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete?")) return;
+
+    try { 
+      const response = await projectService.deleteProject(id);
+      const { res, message } = response;
+      switch (res) {
+        case 1:
+          SweetToast.success(message);  
+          fetchProjectInfo();  
+          clearForm(); 
+          break;
+
+        case 0:
+          SweetToast.success(message);  
+          fetchProjectInfo();  
+          clearForm(); 
+          break;  
+
+        default:
+          SweetToast.error("Something went wrong.");
+          break;
+      } 
+      fetchProjectInfo();  
+    } catch {
+      SweetToast.error("Delete failed");
+    }
+  };
+
+  const fetchProjectInfo = async () => {
+    try {
+      const data = await projectService.getProjectInfo();
+      setProjectInfo(data);
+    } catch (error) {
+      SweetToast.error(error.response?.data?.message || "Failed to fetch project info.");
+    } 
+  };
+
+  useEffect(() => {
+    fetchProjectInfo();
+  }, []);
 
   const clearForm = () => {
     reset({
@@ -190,6 +283,20 @@ function Projects() {
             </form>
           </div>
         </div>
+      </div>  
+
+      <div className="col-md-12 grid-margin stretch-card">
+        <div className="card">
+          <div className="card-body"> 
+              <DynamicTable
+                title="Project Details"
+                data={projectInfo}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                hiddenColumns={["id", "userId", "gitHubLink", "liveLink", "demoLink", "features","techStack"]}
+              />
+          </div>
+        </div>  
       </div>  
     </>
   )
