@@ -10,6 +10,8 @@ function Sidebar() {
   const experianceMatch = useMatch({ path: "/Experiance", end: true });
   const skillseMatch = useMatch({ path: "/Skills", end: true });
   const projectseMatch = useMatch({ path: "/Projects", end: true });
+  const workCategoriesMatch = useMatch({ path: "/WorkCategories", end: true });
+  const creativeWorkMatch = useMatch({ path: "/CreativeWork", end: true });
   return (
     <>
           <nav className="sidebar sidebar-offcanvas" id="sidebar">
@@ -55,32 +57,21 @@ function Sidebar() {
  
               <li className="nav-item">
                 <a className="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
-                  <i className="menu-icon mdi mdi-floor-plan"></i>
-                  <span className="menu-title">Elements</span>
+                  <i className="menu-icon mdi mdi-lightbulb-on-outline"></i>
+                  <span className="menu-title">Creative Works</span>
                   <i className="menu-arrow"></i>
                 </a>
                 <div className="collapse" id="ui-basic">
                   <ul className="nav flex-column sub-menu">
-                    <li className="nav-item"> <a className="nav-link" href="../../pages/ui-features/buttons.html">Buttons</a></li>
-                    <li className="nav-item"> <a className="nav-link" href="../../pages/ui-features/dropdowns.html">Dropdowns</a></li>
-                    <li className="nav-item"> <a className="nav-link" href="../../pages/ui-features/typography.html">Typography</a></li>
+                    <li className="nav-item"> 
+                      <NavLink to="/WorkCategories"  className="nav-link">Work Categories</NavLink>
+                      </li>
+                    <li className="nav-item"> 
+                      <NavLink to="/CreativeWork" className="nav-link">Creative Works</NavLink>
+                    </li> 
                   </ul>
                 </div>
-              </li> 
-              <li className="nav-item">
-                <a className="nav-link" data-bs-toggle="collapse" href="#form-elements" aria-expanded="false" aria-controls="form-elements">
-                  <i className="menu-icon mdi mdi-card-text-outline"></i>
-                  <span className="menu-title">Form elements</span>
-                  <i className="menu-arrow"></i>
-                </a>
-                <div className="collapse" id="form-elements">
-                  <ul className="nav flex-column sub-menu">
-                    <li className="nav-item"><a className="nav-link" href="../../pages/forms/basic_elements.html">Basic Elements</a></li>
-                  </ul>
-                </div>
-              </li>
-
-       
+              </li>  
             </ul>
           </nav>
     </>

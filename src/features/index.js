@@ -5,6 +5,8 @@ import Projects from "./projects/Projects";
 import Skills from "./skills/Skills";
 import UserReg from "./UserReg/UserReg";
 import Login from "./login/Login";
+import CreativeWork from "./creativeWorks/CreativeWork/CreativeWork";
+import WorkCategories from "./creativeWorks/workCategories/WorkCategories";
 export {
   Dashboard,
   Education,
@@ -12,5 +14,7 @@ export {
   Projects,
   Skills,
   UserReg,
-  Login
+  Login,
+  CreativeWork,
+  WorkCategories
 };
