@@ -18,8 +18,7 @@ const router = createBrowserRouter([
   {
     element: <ProtectedRoute />,
     children: [
-      {
-        
+      { 
         element: <Layout />,
         children: [
           { path: "/", element: <Dashboard /> },
@@ -29,9 +28,7 @@ const router = createBrowserRouter([
           { path: "/Skills", element: <Skills /> },
           { path: "/Projects", element: <Projects /> },
           { path: "/WorkCategories", element: <WorkCategories /> },
-          { path: "/CreativeWork", element: <CreativeWork /> },
-
-
+          { path: "/CreativeWork", element: <CreativeWork /> }, 
         ]
       }
     ]
