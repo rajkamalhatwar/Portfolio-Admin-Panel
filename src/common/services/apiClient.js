@@ -4,9 +4,9 @@ import conf from "../../conf/conf.js";
 console.log("AXIOS BASE URL =", conf.apiUrl);
 const apiClient = axios.create({ 
   baseURL: conf.apiUrl, 
-  headers: {
-    "Content-Type": "application/json",
-  },
+  // headers: {
+  //   "Content-Type": "application/json",
+  // },
 });
 
 // Attach token to every request
