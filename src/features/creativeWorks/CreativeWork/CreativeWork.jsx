@@ -20,6 +20,7 @@ function CreativeWork() {
   const [creativeWorks, setCreativeWorks] = useState([]);
   const [imagePreview, setImagePreview] = useState(null);
   const [editId, setEditId] = useState(0);
+  const [tagsList, setTagsList] = useState([]);
   const userId = useSelector((state) => state.auth.userId);
   const {register, handleSubmit,reset, setValue,watch} = useForm({
     defaultValues: {
@@ -35,7 +36,7 @@ function CreativeWork() {
     formData.append("Id", editId);
     formData.append("Title", data.title);
     formData.append("Description", data.description);
-    formData.append("Tags", data.tags);
+    formData.append("Tags", tagsList.join(", "));
     formData.append("WorkCategoryId", data.workCategoryId);
     formData.append("UserId", userId);
 
@@ -124,6 +125,7 @@ function CreativeWork() {
   const clearForm = () => { 
     setEditId(0);
     setImagePreview(null);
+    setTagsList([]);
     reset({
       title: "", 
       description: "",
@@ -137,6 +139,15 @@ function CreativeWork() {
   const handleEdit = (rowData) => {
     setEditId(rowData.id);
     reset(rowData);
+
+      // 🔹 split comma-separated string → array
+    if (rowData.tags) {
+      setTagsList(
+        rowData.tags.split(",").map(t => t.trim())
+      );
+    } else {
+      setTagsList([]);
+    }
 
       // 👇 show existing image from API
     if (rowData.imageURL) {
@@ -209,7 +220,30 @@ function CreativeWork() {
     } 
     fetchWorkCategories();
     fetchCreativeWork();
+    //setValue("tags", tagsList.join(", "));
   }, [formFile]);
+
+
+
+  const handleTagKeyDown = (e) => {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+
+      const value = e.target.value.trim();
+      if (!value) return;
+
+      if (!tagsList.includes(value)) {
+        setTagsList([...tagsList, value]);
+      }
+
+      e.target.value = "";
+    }
+  };
+
+  const removeTag = (tag) => {
+    setTagsList(tagsList.filter((t) => t !== tag));
+  };
+
   
   return (
     <> 
@@ -278,7 +312,8 @@ function CreativeWork() {
               </div>  */}
             <div className="row">
               <div className="col-md-12">
-                <label className="form-label fw-bold">Upload Image</label>
+                <div className="form-group">
+                <label className="form-label">Upload Image</label>
 
                 <div className="image-upload-wrapper">
                   <input
@@ -318,41 +353,69 @@ function CreativeWork() {
                     </div>
                   )}
                 </div>
+                </div>
               </div>
             </div>
             <div className="row">
-            <div className="col-md-12">
-              <Input
-                label="Title"
-                type="text"
-                name="title" 
-                placeholder="Title"
-                {...register('title')}
+              <div className="col-md-12">
+                <Input
+                  label="Title"
+                  type="text"
+                  name="title" 
+                  placeholder="Title"
+                  {...register('title')}
 
-              />
-            </div>   
-            <div className="col-md-12">
-                <TextArea
-                    label="Description"
-                    name="description" 
-                    rows={2}
-                    placeholder="Description"
-                    {...register('description')}
+                />
+              </div>   
+              <div className="col-md-12">
+                  <TextArea
+                      label="Description"
+                      name="description" 
+                      rows={2}
+                      placeholder="Description"
+                      {...register('description')}
 
-                  /> 
+                    /> 
+              </div>
+              {/* <div className="col-md-12">
+                <Input
+                  label="Tags"
+                  type="text"
+                  name="tags" 
+                  placeholder="Tags"
+                  {...register('tags')}
+
+                />
+              </div> */}
             </div>
-            <div className="col-md-12">
-              <Input
-                label="Tags"
-                type="text"
-                name="tags" 
-                placeholder="Tags"
-                {...register('tags')}
+            <div className="row">
+              <div className="col-md-12">
+                <div className="form-group">
+                <label>Tags</label>
 
-              />
+                <div className="tags-input-wrapper">
+                  {tagsList.map((tag, index) => (
+                    <span className="tag-pill" key={index}>
+                      {tag}
+                      <i
+                        className="mdi mdi-close ms-1"
+                        onClick={() => removeTag(tag)}
+                      ></i>
+                    </span>
+                  ))}
+
+                  <input
+                    type="text"
+                    className="tag-input form-control"
+                    placeholder="Type tag & press Enter"
+                    onKeyDown={handleTagKeyDown}
+                  />
+                </div> 
+                </div>
+              </div>
+
             </div>
-          </div>
-  
+     
 
               <Button type="submit" 
                 label={editId > 0 ? "Update" : "Submit"} 

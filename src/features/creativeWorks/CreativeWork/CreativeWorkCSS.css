@@ -56,3 +56,38 @@
 .preview-box:hover .preview-overlay {
   opacity: 1;
 }
+
+.tags-input-wrapper { 
+    min-height: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 5px;
+    padding: 5px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    background: #fff;
+}
+
+.tag-input {
+  border: none;
+  outline: none;
+  flex: 1;
+  min-width: 120px;
+}
+
+.tag-pill {
+  background: #4b49ac;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tag-pill i {
+  cursor: pointer;
+  font-size: 14px;
+}
