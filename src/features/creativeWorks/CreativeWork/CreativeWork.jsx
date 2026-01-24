@@ -1,4 +1,5 @@
-import React from 'react'
+import "./CreativeWorkCSS.css";
+import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import Input from '../../../componants/formCompo/Input';
 import Button from '../../../componants/formCompo/Button';
@@ -6,10 +7,18 @@ import TextArea from '../../../componants/formCompo/TextArea';
 import { useState } from 'react'; 
 import { useSelector } from 'react-redux';
 import creativeWorkService from './CreativeWorkService';
+import Dropdown from '../../../componants/formCompo/Dropdown';
+import WorkCategoryService from '../workCategories/WorkCategoriesService'; 
+import DynamicTable from '../../../componants/tables/DynamicTable';
+import { SweetToast } from "../../../componants/toastAlert/TostAlert";
+ 
 
 function CreativeWork() {
 
-  const [loading, setLoading]  = useState(false);
+  const [loading, setLoading]  = useState(false); 
+  const [workCategories, setWorkCategories] = useState([]);
+  const [creativeWorks, setCreativeWorks] = useState([]);
+  const [imagePreview, setImagePreview] = useState(null);
   const [editId, setEditId] = useState(0);
   const userId = useSelector((state) => state.auth.userId);
   const {register, handleSubmit,reset, setValue,watch} = useForm({
@@ -19,17 +28,63 @@ function CreativeWork() {
     }
   });
 
-  const SubmitSkills = async (data) => {
+  const SubmitCreativeWorks = async (data) => {
 
-    const payload = {
-      ...data,
-      id: editId,
-      userId: userId || 0,   
-    };
+    const formData = new FormData();
+
+    formData.append("Id", editId);
+    formData.append("Title", data.title);
+    formData.append("Description", data.description);
+    formData.append("Tags", data.tags);
+    formData.append("WorkCategoryId", data.workCategoryId);
+    formData.append("UserId", userId);
+
+    // 🔥 IMPORTANT: name MUST match backend property
+    if (data.formFile && data.formFile.length > 0) {
+      formData.append("FormFile", data.formFile[0]);
+    }
+
+    console.log([...formData.entries()]); // debug
+
+    // const payload = {
+    //   ...data,
+    //   id: editId,
+    //   userId: userId || 0,   
+    // };
+
+    //console.log("Payload data :", payload);
 
     setLoading(true);
     try { 
-       console.log("payload data",payload); 
+      const response = await creativeWorkService.submitCreativeWork(formData);
+      console.log("API Response:", response);
+      const { res, message } = response;
+
+      switch (res) {
+        case 1:
+          SweetToast.success(message);  
+          fetchCreativeWork();  
+          clearForm();
+          break;
+
+        case 2:
+          SweetToast.success(message);  
+          fetchCreativeWork();  
+          clearForm(); 
+          break;
+
+        case 3:
+          SweetToast.warning(message);  
+          break;
+
+        case 4:
+          SweetToast.error(message);  
+          break;
+
+        default:
+          SweetToast.error("Something went wrong.");
+          break;
+      }
     }catch (error) {
       SweetToast.error(error.response?.data?.message || "Something went wrong. Please try again.");
     }finally {
@@ -39,16 +94,16 @@ function CreativeWork() {
   } 
 
   // 🔹 Generate AI Content
-  const imageFile = watch("imageFile");
+  const formFile = watch("formFile");
   const handleGenerateAI = async () => {
-    if (!imageFile || imageFile.length === 0) {
+    if (!formFile || formFile.length === 0) {
       alert("Please select an image first");
       return;
     }
 
     const formData = new FormData();
-    formData.append("image", imageFile[0]);
-    console.log("Image file:", imageFile?.[0]);
+    formData.append("image", formFile[0]);
+    console.log("Image file:", formFile?.[0]);
 
     try {
       setLoading(true); 
@@ -64,13 +119,97 @@ function CreativeWork() {
     } finally {
       setLoading(false);
     }
-  };
+  }; 
 
-
-  const clearForm = () => {
- 
+  const clearForm = () => { 
     setEditId(0);
+    setImagePreview(null);
+    reset({
+      title: "", 
+      description: "",
+      workCategoryId: "0",
+      tags:"" 
+    });
+    setImagePreview(null);
   };
+
+  //Edit Handler
+  const handleEdit = (rowData) => {
+    setEditId(rowData.id);
+    reset(rowData);
+
+      // 👇 show existing image from API
+    if (rowData.imageURL) {
+      setImagePreview(rowData.imageURL);
+    } else {
+      setImagePreview(null);
+    }
+  };
+
+    //Delete Handler
+  const handleDelete = async (id) => {
+        if (!window.confirm("Are you sure you want to delete?")) return;
+
+    try { 
+      //const response = await WorkCategoryService.deleteWorkCategory(id); 
+      console.log("delete Response:", id);
+      // const { res, message } = response;
+      // switch (res) {
+      //   case 1:
+      //     SweetToast.success(message);  
+      //     fetchWorkCategories();  
+      //     clearForm();
+      //     break;
+
+      //   case 0:
+      //     SweetToast.success(message);  
+      //     fetchWorkCategories(); 
+      //     clearForm();
+      //     break;  
+
+      //   default:
+      //     SweetToast.error("Something went wrong.");
+      //     break;
+      // } 
+      // fetchWorkCategories(); // ✅ refresh table
+    } catch {
+      SweetToast.error("Delete failed");
+    }
+  };
+
+ // fetch Dropdown data
+  const fetchWorkCategories = async () => {
+    try {
+      const response = await WorkCategoryService.getWorkCategoryInfo();
+        
+      setWorkCategories(response || []);
+    } catch (error) {
+      SweetToast.error("Failed to load details");
+    }
+  };
+
+  //fetch table data
+  const fetchCreativeWork = async () => {
+    try {
+      const response = await creativeWorkService.getCreativeWorkInfo();
+      console.log("table data : ",response);
+      setCreativeWorks(response || []);
+    } catch (error) {
+      SweetToast.error("Failed to load details");
+    }
+  };
+
+  useEffect(() => { 
+    if (formFile && formFile.length > 0) {
+      const file = formFile[0];
+      const previewUrl = URL.createObjectURL(file);
+      setImagePreview(previewUrl);
+
+      return () => URL.revokeObjectURL(previewUrl);
+    } 
+    fetchWorkCategories();
+    fetchCreativeWork();
+  }, [formFile]);
   
   return (
     <> 
@@ -78,17 +217,29 @@ function CreativeWork() {
         <div className="card">
           <div className="card-body">
             <h4 className="card-title">Work Detail</h4>
-            <form className="forms-sample" onSubmit={handleSubmit(SubmitSkills)}>
+            <form className="forms-sample" onSubmit={handleSubmit(SubmitCreativeWorks)}>
+            <div className="col-md-12">
+                <Dropdown
+                  label="Select Work Category"
+                  name="workCategoryId"
+                  register={register}
+                  options={workCategories}
+                  required={true}
+                  valueKey="id"
+                  labelKey="categoryName"
+                   
+                /> 
+            </div> 
 
-              <div className="row">
+              {/* <div className="row">
                 <div className="col-md-9">
                   <Input
                     label="Image"
                     type="file"
-                    name="imageFile" 
+                    name="formFile" 
                     placeholder="Image"
                     required
-                    {...register('imageFile',{
+                    {...register('formFile',{
                       required:true,
                     })}
                   />
@@ -104,7 +255,71 @@ function CreativeWork() {
                     />
                   </div> 
                 </div>  
-              </div>   
+              </div>
+              <div className='row'>
+                {imagePreview && (
+                  <div className="col-md-12 mt-2">
+                    <label className="form-label">Image Preview</label>
+                    <div>
+                      <img
+                        src={imagePreview}
+                        alt="Preview"
+                        style={{
+                          width: "150px",
+                          height: "150px",
+                          objectFit: "cover",
+                          borderRadius: "8px",
+                          border: "1px solid #ddd"
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}  
+              </div>  */}
+            <div className="row">
+              <div className="col-md-12">
+                <label className="form-label fw-bold">Upload Image</label>
+
+                <div className="image-upload-wrapper">
+                  <input
+                    type="file"
+                    id="imageUpload"
+                    accept="image/*"
+                    className="d-none"
+                    {...register("formFile", { required: editId === 0 })}
+                  />
+
+                  {!imagePreview ? (
+                    <label htmlFor="imageUpload" className="upload-box">
+                      <i className="mdi mdi-cloud-upload-outline upload-icon"></i>
+                      <p className="mb-1">Click to upload image</p>
+                      <small>PNG, JPG, JPEG</small>
+                    </label>
+                  ) : (
+                    <div className="preview-box">
+                      <img src={imagePreview} alt="Preview" />
+
+                      <div className="preview-overlay">
+                        <label htmlFor="imageUpload" className="btn btn-sm btn-light">
+                          Change
+                        </label>
+
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-danger"
+                          onClick={() => {
+                            setImagePreview(null);
+                            setValue("formFile", null);
+                          }}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
             <div className="row">
             <div className="col-md-12">
               <Input
@@ -148,6 +363,23 @@ function CreativeWork() {
           </div>
         </div>
       </div>
+      <div className="col-md-12 grid-margin stretch-card">
+        <div className="card">
+          <div className="card-body"> 
+              <DynamicTable
+                title="Creative Work Details"
+                data={creativeWorks}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                hiddenColumns={["id", "userId", "formFile", "relativeURL", "workCategoryId"]}
+                imageColumns={["imageURL"]}  
+                columnLabels={{
+                  imageURL: "IMAGE" 
+                }}
+              />
+          </div>
+        </div>  
+      </div> 
     </>
   )
 }

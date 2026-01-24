@@ -6,7 +6,11 @@ const DynamicTable = ({
   onEdit,
   onDelete,
   hiddenColumns = [],
-  centerColumns = [] // 👈 new prop
+  centerColumns = [],
+  imageColumns = [],
+  columnLabels = {},          // 👈 NEW
+  imageWidth = 60,
+  imageHeight = 60
 }) => {
   if (!Array.isArray(data) || data.length === 0 || !data[0]) {
     return <p className="text-muted">No data available</p>;
@@ -16,7 +20,14 @@ const DynamicTable = ({
     (key) => !hiddenColumns.includes(key)
   );
 
-  const isCenter = (key) => centerColumns.includes(key);
+  const isCenter = (key) =>
+    centerColumns.includes(key) || imageColumns.includes(key);
+
+  const isImageColumn = (key) => imageColumns.includes(key);
+
+  const getHeaderLabel = (key) =>
+    columnLabels[key] ??
+    key.replace(/([A-Z])/g, " $1").toUpperCase();
 
   return (
     <div className="col-lg-12 grid-margin stretch-card">
@@ -36,7 +47,7 @@ const DynamicTable = ({
                       key={header}
                       className={isCenter(header) ? "text-center" : ""}
                     >
-                      {header.replace(/([A-Z])/g, " $1").toUpperCase()}
+                      {getHeaderLabel(header)}
                     </th>
                   ))}
                 </tr>
@@ -45,32 +56,51 @@ const DynamicTable = ({
               <tbody>
                 {data.map((row, index) => (
                   <tr key={row.id ?? index}>
+                    {/* Edit */}
                     <td className="text-center align-middle">
                       <i
                         className="mdi mdi-file-edit-outline text-primary"
                         style={{ fontSize: "25px", cursor: "pointer" }}
-                        title="Edit"
                         onClick={() => onEdit(row)}
-                      ></i>
+                      />
                     </td>
 
+                    {/* Delete */}
                     <td className="text-center align-middle">
                       <i
                         className="mdi mdi-trash-can-outline text-danger"
                         style={{ fontSize: "25px", cursor: "pointer" }}
-                        title="Delete"
                         onClick={() => onDelete(row.id)}
-                      ></i>
+                      />
                     </td>
 
                     {headers.map((key) => (
                       <td
                         key={key}
-                        className={isCenter(key) ? "text-center" : ""}
+                        className={`align-middle ${
+                          isCenter(key) ? "text-center" : ""
+                        }`}
                       >
-                        {Array.isArray(row[key])
-                          ? row[key].length
-                          : row[key] ?? "-"}
+                        {isImageColumn(key) ? (
+                          row[key] ? (
+                            <img
+                              src={row[key]}
+                              alt="img"
+                              width={imageWidth}
+                              height={imageHeight}
+                              style={{
+                                objectFit: "cover",
+                                borderRadius: "6px"
+                              }}
+                            />
+                          ) : (
+                            "-"
+                          )
+                        ) : Array.isArray(row[key]) ? (
+                          row[key].length
+                        ) : (
+                          row[key] ?? "-"
+                        )}
                       </td>
                     ))}
                   </tr>
