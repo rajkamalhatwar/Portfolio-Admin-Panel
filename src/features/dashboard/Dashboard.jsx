@@ -1,7 +1,7 @@
 import React from 'react'
 // Dashboard scripts
-import '../../assets/js/jquery.cookie.js'
-import '../../assets/js/dashboard.js' 
+// import '../../../public/assets/js/jquery.cookie.js'
+// import '../../../public/assets/js/dashboard.js' 
 
  
 
