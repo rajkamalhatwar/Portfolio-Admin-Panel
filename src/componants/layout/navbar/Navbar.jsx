@@ -8,8 +8,9 @@ function Navbar(
     LogoMini,
     WelcomeText='Good Morning, ',
     UserName='John Doe',
-    SubText='Your performance summary this week',
-    ProfileImage
+    SubText='Welcome to the Portfolio Admin Dashboard',
+    ProfileImage, 
+    Email
   }
 ) 
 {
@@ -40,7 +41,7 @@ function Navbar(
               </li>
             </ul>
             <ul className="navbar-nav ms-auto">
-              <li className="nav-item dropdown d-none d-lg-block">
+              {/* <li className="nav-item dropdown d-none d-lg-block">
                 <a className="nav-link dropdown-bordered dropdown-toggle dropdown-toggle-split" id="messageDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false"> Select Category </a>
                 <div className="dropdown-menu dropdown-menu-right navbar-dropdown preview-list pb-0" aria-labelledby="messageDropdown">
                   <a className="dropdown-item py-3">
@@ -86,8 +87,8 @@ function Navbar(
                   <i className="icon-search"></i>
                   <input type="search" className="form-control" placeholder="Search Here" title="Search here"/>
                 </form>
-              </li>
-              <li className="nav-item dropdown">
+              </li> */}
+              {/* <li className="nav-item dropdown">
                 <a className="nav-link count-indicator" id="notificationDropdown" href="#" data-bs-toggle="dropdown">
                   <i className="icon-bell"></i>
                   <span className="count"></span>
@@ -125,8 +126,8 @@ function Navbar(
                     </div>
                   </a>
                 </div>
-              </li>
-              <li className="nav-item dropdown">
+              </li> */}
+              {/* <li className="nav-item dropdown">
                 <a className="nav-link count-indicator" id="countDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
                   <i className="icon-mail icon-lg"></i>
                 </a>
@@ -164,17 +165,17 @@ function Navbar(
                     </div>
                   </a>
                 </div>
-              </li>
+              </li> */}
               <li className="nav-item dropdown d-none d-lg-block user-dropdown">
                 <a className="nav-link" id="UserDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                  <img className="img-xs rounded-circle" src={ProfileImage} alt="Profile image"/> </a>
+                  <img className="img-xl rounded-circle" src={ProfileImage} alt="Profile image"/> </a>
                 <div className="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
                   <div className="dropdown-header text-center">
                     <img className="img-md rounded-circle" src={ProfileImage} alt="Profile image"/>
-                    <p className="mb-1 mt-3 fw-semibold">Allen Moreno</p>
-                    <p className="fw-light text-muted mb-0">allenmoreno@gmail.com</p>
+                    <p className="mb-1 mt-3 fw-semibold">{UserName}</p>
+                    <p className="fw-light text-muted mb-0">{Email}</p>
                   </div>
-                  <a className="dropdown-item"><i className="dropdown-item-icon mdi mdi-account-outline text-primary me-2"></i> My Profile <span className="badge badge-pill badge-danger">1</span></a>
+                  {/* <a className="dropdown-item"><i className="dropdown-item-icon mdi mdi-account-outline text-primary me-2"></i> My Profile <span className="badge badge-pill badge-danger">1</span></a> */}
                   <LogOutBtn />
                 </div>
               </li>
