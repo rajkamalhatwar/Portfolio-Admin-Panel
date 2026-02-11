@@ -30,8 +30,13 @@ const submitCreativeWork = async (data) => {
   return response.data;
 };  
 
+const deleteCreativeWork = async (id) => {
+  const response = await apiClient.post("/CreativeWorks/DeleteCreativeWork?creativeWorkId=" + id);
+  return response.data;
+}; 
+
 const creativeWorkService = {
- getAIGeneratedData,getCreativeWorkInfo,submitCreativeWork
+ getAIGeneratedData,getCreativeWorkInfo,submitCreativeWork,deleteCreativeWork
 };
 
 export default creativeWorkService;

@@ -1,5 +1,3 @@
- 
- 
 import logo from '../assets/images/logo.svg';
 import ProfileImage from '../assets/images/faces/face1.jpg';
 import LogoMini from '../assets/images/logo-mini.svg';

@@ -12,6 +12,7 @@ import WorkCategoryService from '../workCategories/WorkCategoriesService';
 import DynamicTable from '../../../componants/tables/DynamicTable';
 import { SweetToast } from "../../../componants/toastAlert/TostAlert";
  
+ 
 
 function CreativeWork() {
 
@@ -162,27 +163,27 @@ function CreativeWork() {
         if (!window.confirm("Are you sure you want to delete?")) return;
 
     try { 
-      //const response = await WorkCategoryService.deleteWorkCategory(id); 
-      console.log("delete Response:", id);
-      // const { res, message } = response;
-      // switch (res) {
-      //   case 1:
-      //     SweetToast.success(message);  
-      //     fetchWorkCategories();  
-      //     clearForm();
-      //     break;
+      const response = await creativeWorkService.deleteCreativeWork(id); 
+      console.log("delete Response:", response);
+      const { res, message } = response;
+      switch (res) {
+        case 1:
+          SweetToast.success(message);  
+          fetchCreativeWork();  
+          clearForm();
+          break;
 
-      //   case 0:
-      //     SweetToast.success(message);  
-      //     fetchWorkCategories(); 
-      //     clearForm();
-      //     break;  
+        case 0:
+          SweetToast.success(message);  
+          fetchCreativeWork(); 
+          clearForm();
+          break;  
 
-      //   default:
-      //     SweetToast.error("Something went wrong.");
-      //     break;
-      // } 
-      // fetchWorkCategories(); // ✅ refresh table
+        default:
+          SweetToast.error("Something went wrong.");
+          break;
+      } 
+      fetchCreativeWork(); // ✅ refresh table
     } catch {
       SweetToast.error("Delete failed");
     }
