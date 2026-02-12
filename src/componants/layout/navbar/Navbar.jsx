@@ -168,10 +168,10 @@ function Navbar(
               </li> */}
               <li className="nav-item dropdown d-none d-lg-block user-dropdown">
                 <a className="nav-link" id="UserDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                  <img className="img-xl rounded-circle" src={ProfileImage} alt="Profile image"/> </a>
+                  <img className="img-xs rounded-circle" src={ProfileImage} alt="Profile image"/> </a>
                 <div className="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
                   <div className="dropdown-header text-center">
-                    <img className="img-md rounded-circle" src={ProfileImage} alt="Profile image"/>
+                    <img className="img-xs rounded-circle" src={ProfileImage} alt="Profile image"/>
                     <p className="mb-1 mt-3 fw-semibold">{UserName}</p>
                     <p className="fw-light text-muted mb-0">{Email}</p>
                   </div>

@@ -1,4 +1,4 @@
-import React, { useState,useEffect, use } from 'react';
+import React, { useState,useEffect } from 'react';
 import Input from '../../componants/formCompo/Input.jsx';
 import TextArea from '../../componants/formCompo/TextArea.jsx';
 import Button from '../../componants/formCompo/Button.jsx';
@@ -9,19 +9,46 @@ import authService from '../login/authService.js';
 import userRegService from './UserRegService.js';
 
 function UserReg() {
-  const {register, handleSubmit, reset} = useForm(); 
+  const {register, handleSubmit, reset, watch, setValue} = useForm(); 
   const [loading, setLoading]  = useState (false);
+  const [imagePreview, setImagePreview] = useState(null);
   const userId = useSelector((state) => state.auth.userId);
-   
+  const formFile = watch("formFile");
   
   const SubmitUser = async (data) => {   
-    const payload = {
-      ...data,
-      userId: userId || 0,   
-    };
+    // const payload = {
+    //   ...data,
+    //   userId: userId || 0,   
+    // };
+    const formData = new FormData();
+    // formData.append("Id", editId || 0);
+    formData.append("UserName", data.userName || "");
+    formData.append("Email", data.email || "");
+    formData.append("MobileNo", data.mobileNo || "");
+    formData.append("Designations", data.designations || "");
+    formData.append("HeroLine", data.heroLine || "");
+    formData.append("ShortAbout", data.shortAbout || "");
+    formData.append("LongAbout", data.longAbout || "");
+    formData.append("Address", data.address || "");
+    formData.append("City", data.city || "");
+    formData.append("State", data.state || "");
+    formData.append("Country", data.country || "");
+    formData.append("TwitterLink", data.twitterLink || "");
+    formData.append("LinkedInLink", data.linkedInLink || "");
+    formData.append("GitHubLink", data.gitHubLink || "");
+    formData.append("InstagramLink", data.instagramLink || "");
+    formData.append("BehanceLink", data.behanceLink || "");
+    formData.append("UserId", userId || 0);
+
+    // 🔥 IMPORTANT: name MUST match backend property
+    if (data.formFile && data.formFile.length > 0) {
+      formData.append("FormFile", data.formFile[0]);
+    }
+    console.log("submit data : ",[...formData.entries()]); // debug
+
     setLoading(true);
     try{
-      const response = await userRegService.submitUser(payload);
+      const response = await userRegService.submitUser(formData);
       console.log("API Response:", response);
       const { res, message } = response;
 
@@ -47,13 +74,10 @@ function UserReg() {
           break;
       }
     }catch (error) {
-      SweetToast.error(err.response?.data?.message || "Something went wrong. Please try again.");
+      SweetToast.error(error.response?.data?.message || "Something went wrong. Please try again.");
     }finally {
       setLoading(false);
-    }
-
-    console.log(payload);
-    
+    } 
      
     // TODO: API call
   };
@@ -80,10 +104,25 @@ function UserReg() {
           instagramLink : userData.instagramLink || "",
           behanceLink : userData.behanceLink || "",  
         });
-      }
+        if(userData.photoUrl){
+          setImagePreview(userData.photoUrl);
+        }
+        
+      } 
   };
     fetchUserData();
   }, [userId, reset]);  
+
+
+  useEffect(() => {
+    if (formFile && formFile.length > 0) {
+      const file = formFile[0];
+      const previewUrl = URL.createObjectURL(file);
+      setImagePreview(previewUrl);
+
+      return () => URL.revokeObjectURL(previewUrl);
+    }
+  }, [formFile]);
 
   return (
     <div className="col-md-12 grid-margin stretch-card">
@@ -91,7 +130,52 @@ function UserReg() {
         <div className="card-body">
           <h4 className="card-title">User Registration</h4>
           <form className="forms-sample" onSubmit={handleSubmit(SubmitUser)}>
+            <div className="row">
+              <div className="col-md-12">
+                <div className="form-group">
+                <label className="form-label">Upload Image</label>
 
+                <div className="image-upload-wrapper">
+                  <input
+                    type="file"
+                    id="imageUpload"
+                    accept="image/*"
+                    className="d-none"
+                    {...register("formFile")}
+                  />
+
+                  {!imagePreview ? (
+                    <label htmlFor="imageUpload" className="upload-box">
+                      <i className="mdi mdi-cloud-upload-outline upload-icon"></i>
+                      <p className="mb-1">Click to upload image</p>
+                      <small>PNG, JPG, JPEG</small>
+                    </label>
+                  ) : (
+                    <div className="preview-box">
+                      <img src={imagePreview} alt="Preview" />
+
+                      <div className="preview-overlay">
+                        <label htmlFor="imageUpload" className="btn btn-sm btn-light">
+                          Change
+                        </label>
+
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-danger"
+                          onClick={() => {
+                            setImagePreview(null);
+                            setValue("formFile", null);
+                          }}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                </div>
+              </div>
+            </div>
             <div className="row">
               <div className="col-md-4">
                 <Input

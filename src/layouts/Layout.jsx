@@ -49,7 +49,7 @@ function Layout() {
       <div className="container-scroller">
  
         {/* partial:partials/_navbar.html */}
-        <Navbar Logo={logo} LogoMini={LogoMini} ProfileImage={ProfileImage} UserName={userData.userName} WelcomeText='Hello,' Email={userData.email}  />
+        <Navbar Logo={logo} LogoMini={LogoMini} ProfileImage={userData.photoUrl} UserName={userData.userName} WelcomeText='Hello,' Email={userData.email}  />
         {/* partial */}
         <div className="container-fluid page-body-wrapper">
           {/* partial:partials/_sidebar.html */}
