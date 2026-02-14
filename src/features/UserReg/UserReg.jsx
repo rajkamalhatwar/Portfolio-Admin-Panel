@@ -7,12 +7,14 @@ import { useSelector } from 'react-redux';
 import { SweetToast } from '../../componants/toastAlert/TostAlert.jsx';
 import authService from '../login/authService.js';
 import userRegService from './UserRegService.js';
+import { useLoaderData } from "react-router-dom";
 
 function UserReg() {
   const {register, handleSubmit, reset, watch, setValue} = useForm(); 
   const [loading, setLoading]  = useState (false);
   const [imagePreview, setImagePreview] = useState(null);
   const userId = useSelector((state) => state.auth.userId);
+  const userData = useLoaderData(); 
   const formFile = watch("formFile");
   
   const SubmitUser = async (data) => {   
@@ -82,9 +84,7 @@ function UserReg() {
     // TODO: API call
   };
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const userData = await authService.getUserById(userId);
+  useEffect(() => { 
       if (userData) { 
         reset({
           userName: userData.userName || "",
@@ -108,10 +108,10 @@ function UserReg() {
           setImagePreview(userData.photoUrl);
         }
         
-      } 
-  };
-    fetchUserData();
-  }, [userId, reset]);  
+      }  
+  }, [userData, reset]);  
+
+  
 
 
   useEffect(() => {
@@ -356,3 +356,5 @@ function UserReg() {
 }
 
 export default UserReg;
+
+

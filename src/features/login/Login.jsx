@@ -40,7 +40,7 @@ function Login() {
               localStorage.setItem("token", response.token);
 
             // 2. Get user data
-              const LogedInUserData = await authService.getUserById(response.userId);
+              const LogedInUserData = await authService.getUserById();
               console.log("Fetched User Data:", LogedInUserData);
 
             // 3. Update Redux state

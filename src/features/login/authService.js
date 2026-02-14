@@ -12,8 +12,8 @@ const logout= async () => {
 };
 
 // ✅ GET user by ID
-const getUserById = async (userId) => {
-  const response = await apiClient.get(`/UserReg/GetUserById/${userId}`);
+const getUserById = async () => {
+  const response = await apiClient.get(`/UserReg/GetUserById`);
   return response.data.getUsersById[0];
 };
 

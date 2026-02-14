@@ -4,6 +4,7 @@ import Layout from '../layouts/Layout.jsx';
 import AuthLayout from '../layouts/AuthLayout.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
 import { createBrowserRouter } from 'react-router-dom';
+import { userRegLoader } from '../features/UserReg/loader/userRegLoader.js';
 
 const router = createBrowserRouter([
   // PUBLIC ROUTES
@@ -22,7 +23,10 @@ const router = createBrowserRouter([
         element: <Layout />,
         children: [
           { path: "/", element: <Dashboard /> },
-          { path: "/UserReg", element: <UserReg /> },
+          { path: "/UserReg", 
+            element: <UserReg />,
+            loader : userRegLoader
+          },
           { path: "/Education", element: <Education /> },
           { path: "/Experiance", element: <Experiance /> },
           { path: "/Skills", element: <Skills /> },
